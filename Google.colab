@@ -1,0 +1,72 @@
+# Install necessary libraries
+!apt-get install openjdk-8-jdk-headless -qq > /dev/null
+!wget -q https://archive.apache.org/dist/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
+!tar xf spark-3.2.1-bin-hadoop3.2.tgz
+!pip install -q findspark pyspark
+
+# Set environment variables
+import os
+os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-8-openjdk-amd64"
+os.environ["SPARK_HOME"] = "/content/spark-3.2.1-bin-hadoop3.2"
+
+# Initialize SparkSession
+import findspark
+findspark.init()
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import * # Import useful functions
+from pyspark.sql.types import *
+
+spark = SparkSession.builder.appName("ColabPySparkBigData").getOrCreate()
+
+# Example: Loading data from a CSV file (replace with your data source)
+# If you have a file in your Google Drive, you can mount it:
+# from google.colab import drive
+# drive.mount('/content/drive')
+# file_path = '/content/drive/MyDrive/your_file.csv' # Replace with your actual path
+
+# Example using a publicly available dataset (replace with your data source)
+!wget https://raw.githubusercontent.com/plotly/datasets/master/titanic.csv # Download the titanic dataset
+file_path = 'titanic.csv'
+
+try:
+    df = spark.read.csv(file_path, header=True, inferSchema=True)
+    print("Data loaded successfully!")
+except Exception as e:
+    print(f"Error loading data: {e}")
+    spark.stop() # Stop spark to prevent errors
+    exit() # Stop the script execution
+
+# Data Analysis Examples (adapt these to your specific needs)
+print("Schema:")
+df.printSchema()
+
+print("First 5 rows:")
+df.show(5)
+
+print("Number of rows:")
+print(df.count())
+
+print("Summary statistics for Age:")
+df.describe("Age").show()
+
+print("Number of passengers by Pclass:")
+df.groupBy("Pclass").count().show()
+
+print("Average age of survivors and non-survivors:")
+df.groupBy("Survived").agg(mean("Age")).show()
+
+print("Survival rate by sex:")
+df.groupBy("Sex").agg(mean("Survived")).show()
+
+# Example of filtering
+print("Passengers older than 60:")
+df.filter(col("Age") > 60).show()
+
+# Example of adding a new column
+df = df.withColumn("AgeInMonths", col("Age") * 12)
+df.select("Name", "Age", "AgeInMonths").show(5)
+
+
+# Stop the SparkSession
+spark.stop()
+print("Spark stopped.")
