@@ -14,6 +14,10 @@ We can load the data on our way of analysis like printing first five rows, numbe
 Finally we can stop the spark session by giving the command. This is the overlay of the program.
 Big data is very huge and complex it can be of any structure based on the datas. As before, we cannot use traditional method for big data now, there are tons of datas generated everyday. That's why we use big tools like Apache Spark and Hadoop. These are very helpful for data analysts for doing their tasks. In this task i have intsalled spark, java and pyspark also very important to setup the environment variables in your system. You can use Ai tools for the guide also youtube videos. 
 
+Output of Dataset:
+![Image](https://github.com/user-attachments/assets/2e916753-f8f2-4569-83ba-c187f071ef4e)
+![Image](https://github.com/user-attachments/assets/a786764f-ec82-4bf9-aa6c-db24cb610d3a)
+
 
 
 
